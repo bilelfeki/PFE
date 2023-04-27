@@ -24,9 +24,7 @@ import java.util.Arrays;
 public class fileController {
 
     @PersistenceContext
-
     private EntityManager entityManager;
-
     @CrossOrigin("*")
     @PostMapping("/api/v1/file_integrator")
     public void processFile(@RequestParam("File") MultipartFile file,
@@ -81,6 +79,7 @@ public class fileController {
             ClassLoader classLoader = ClassLoader.getSystemClassLoader();
             Class<?> myClass = classLoader.loadClass("mss.pfe.fileIntegrator.okl"); // Replace with the fully qualified name of your class
             Object entity = myClass.newInstance();
+
 
         } catch (IOException e) {
             throw new RuntimeException(e);
