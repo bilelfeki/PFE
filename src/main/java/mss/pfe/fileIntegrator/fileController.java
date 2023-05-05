@@ -6,20 +6,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mss.pfe.fileIntegrator.entities.Champ;
 import mss.pfe.fileIntegrator.entities.Config;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.tools.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @Component
@@ -36,13 +33,16 @@ public class fileController {
         String initialRepositorySourceCode=DefaultCode.RepositorySourceCode;
         String initialEntitySourceCode =DefaultCode.EntitySourceCode;
         String entityName = "";
-        String[] codes=prepareEntityCode(entities,initialRepositorySourceCode,initialEntitySourceCode);
+        String[] codes=prepareEntityCode(entities,initialRepositorySourceCode,initialEntitySourceCode,config);
 
         initialRepositorySourceCode=codes[0];
         initialEntitySourceCode=codes[1];
         entityName=codes[2];
 
         createFilesFromCode(entityName,initialRepositorySourceCode,initialEntitySourceCode);
+
+        List<String> fileContent=getFileString(file);
+        processFile(fileContent,entities);
     }
     private Config convertConfigStringToConfig(String configString){
         ObjectMapper objectMapper = new ObjectMapper();
@@ -67,16 +67,19 @@ public class fileController {
         }
         return entities;
     }
-    private String[] prepareEntityCode(Map<String,ArrayList<Champ>> entities,String initialRepositorySourceCode,String initialEntitySourceCode){
+    private String[] prepareEntityCode(Map<String,ArrayList<Champ>> entities,String initialRepositorySourceCode,String initialEntitySourceCode,Config config ){
         String[] code=new String[3];
         String className="";
         for(String entity: entities.keySet()){
             className=entity;
-            initialEntitySourceCode=String.format(initialEntitySourceCode, entity,entity);
+            initialEntitySourceCode=String.format(initialEntitySourceCode,config.getSchema(), entity,entity);
             Champ champ;
             for(int i=0;i<entities.get(entity).size();i++){
                 champ = entities.get(entity).get(i);
-                initialEntitySourceCode+="private "+champ.getType()+" "+champ.getValeur()+";\n";
+                initialEntitySourceCode+="private "+champ.getType()+" "+champ.getValeur()+";\n" +
+                        "public void "+"set"+champ.getValeur()+"("+champ.getType() + " "+ champ.getValeur()+"){\n" +
+                        "this."+champ.getValeur()+"=" +champ.getValeur()+";\n" +
+                        "}\n";
             }
             initialEntitySourceCode+="}";
         }
@@ -86,22 +89,82 @@ public class fileController {
         code[2]=className;
         return code;
     }
-    public void createFilesFromCode(String className,String RepositorySourceCode,String EntitySourceCode ){
+    public void createFilesFromCode(String entityName,String RepositorySourceCode,String EntitySourceCode ){
+        String filePath="C:\\Users\\bilel\\Desktop\\entityCreator\\executable\\src\\main\\java\\mss\\pfe\\fileIntegrator\\entities\\";
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-        File sourceFile1 = new File(className + ".java");
-        File sourceFile2 = new File(className + "Repo" +".java");
-        Writer writer1 = null;
-        Writer writer2=null;
+        File sourceFile1 = new File(entityName + ".java");
+        File sourceFile2 = new File(entityName + "Repo" +".java");
         try {
-            String filePath="C:\\Users\\bilel\\Desktop\\entityCreator\\fileIntegrator\\src\\main\\java\\mss\\pfe\\fileIntegrator/";
-            writer1 = new FileWriter(filePath+sourceFile1);
-            writer2= new FileWriter(filePath+sourceFile2);
+            Writer writer1 = new FileWriter(filePath+sourceFile1);
+            Writer writer2 = new FileWriter(filePath+sourceFile2);
             writer1.write(EntitySourceCode);
             writer2.write(RepositorySourceCode);
             writer1.close();
             writer2.close();
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void processFile(List<String> fileContent,Map<String,ArrayList<Champ>> entities){
+        for (String table : entities.keySet()){
+
+            String className= table;
+            String object =table.toLowerCase();
+            int fileLineIndex =0 ;
+            String processFileSourceCode=DefaultCode.processFileSourceCode;
+            String code ="";
+
+            for(String line:fileContent){
+                fileLineIndex++;
+                ArrayList<Champ> champs=entities.get(table);
+                code+=className+ " "+ object + fileLineIndex + "= new "+table+ "();\n";
+
+                for(int i=0;i<champs.size();i++){
+                    Champ champ = champs.get(i);
+                    String champContent=line.substring(champ.getValeur_min(),champ.getValeur_max());
+
+                    code+=object + fileLineIndex+".set"+champ.getValeur()+"("+champContent+");\n";
+                    System.out.println(champContent);
+                }
+                code+=object + fileLineIndex+".save("+object + fileLineIndex+");\n";
+
+            }
+            processFileSourceCode=String.format(processFileSourceCode,code);
+            System.out.println(processFileSourceCode);
+        }
+    }
+    private List<String> getFileString(MultipartFile file){
+        List<String> lines = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return lines;
+    }
+    public void createFileProcessingCode(){
+
+    }
+    @PostMapping("/api/v1/compile")
+    public void compile(){
+        try {
+            String path="C:\\Users\\bilel\\Desktop\\entityCreator\\executable ";
+            Runtime rt =Runtime.getRuntime();
+            Process p1= rt.exec("cmd /c cd "+path+" && mvn clean install > mvn.txt");
+            p1.waitFor(20, TimeUnit.SECONDS);
+
+            Process p2= Runtime.getRuntime().exec("cmd /c cd "+path+"\\target && java -jar fileIntegrator-0.0.1-SNAPSHOT.jar  >ok.txt");
+            p2.waitFor(40, TimeUnit.SECONDS);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
