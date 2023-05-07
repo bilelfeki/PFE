@@ -1,0 +1,93 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< mss.pfe:fileIntegrator >-----------------------
+[INFO] Building fileIntegrator 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.2.0:clean (default-clean) @ fileIntegrator ---
+[INFO] Deleting C:\Users\bilel\Desktop\entityCreator\executable\target
+[INFO] 
+[INFO] --- maven-resources-plugin:3.3.1:resources (default-resources) @ fileIntegrator ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:compile (default-compile) @ fileIntegrator ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 11 source files to C:\Users\bilel\Desktop\entityCreator\executable\target\classes
+[INFO] 
+[INFO] --- maven-resources-plugin:3.3.1:testResources (default-testResources) @ fileIntegrator ---
+[INFO] skip non existing resourceDirectory C:\Users\bilel\Desktop\entityCreator\executable\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:testCompile (default-testCompile) @ fileIntegrator ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to C:\Users\bilel\Desktop\entityCreator\executable\target\test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.2:test (default-test) @ fileIntegrator ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running mss.pfe.fileIntegrator.FileIntegratorApplicationTests
+14:59:53.454 [main] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Neither @ContextConfiguration nor @ContextHierarchy found for test class [FileIntegratorApplicationTests]: using SpringBootContextLoader
+14:59:53.468 [main] DEBUG org.springframework.test.context.support.AbstractContextLoader -- Could not detect default resource locations for test class [mss.pfe.fileIntegrator.FileIntegratorApplicationTests]: no resource found for suffixes {-context.xml, Context.groovy}.
+14:59:53.469 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [mss.pfe.fileIntegrator.FileIntegratorApplicationTests]: FileIntegratorApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+14:59:53.527 [main] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Using ContextCustomizers for test class [FileIntegratorApplicationTests]: [ExcludeFilterContextCustomizer, DuplicateJsonObjectContextCustomizer, MockitoContextCustomizer, TestRestTemplateContextCustomizer, DisableObservabilityContextCustomizer, PropertyMappingContextCustomizer, Customizer]
+14:59:53.681 [main] DEBUG org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider -- Identified candidate component class: file [C:\Users\bilel\Desktop\entityCreator\executable\target\classes\mss\pfe\fileIntegrator\FileIntegratorApplication.class]
+14:59:53.684 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration mss.pfe.fileIntegrator.FileIntegratorApplication for test class mss.pfe.fileIntegrator.FileIntegratorApplicationTests
+14:59:53.915 [main] DEBUG org.springframework.test.context.util.TestContextSpringFactoriesUtils -- Skipping candidate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener] due to a missing dependency. Specify custom TestExecutionListener classes or make the default TestExecutionListener classes and their required dependencies available. Offending class: [jakarta/servlet/ServletContext]
+14:59:53.947 [main] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Using TestExecutionListeners for test class [FileIntegratorApplicationTests]: [DirtiesContextBeforeModesTestExecutionListener, ApplicationEventsTestExecutionListener, MockitoTestExecutionListener, DependencyInjectionTestExecutionListener, DirtiesContextTestExecutionListener, TransactionalTestExecutionListener, SqlScriptsTestExecutionListener, EventPublishingTestExecutionListener, ResetMocksTestExecutionListener, RestDocsTestExecutionListener, MockRestServiceServerResetTestExecutionListener, MockMvcPrintOnlyOnFailureTestExecutionListener, WebDriverTestExecutionListener, MockWebServiceServerTestExecutionListener]
+14:59:53.951 [main] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener -- Before test class: class [FileIntegratorApplicationTests], class annotated with @DirtiesContext [false] with mode [null]
+14:59:53.988 [main] DEBUG org.springframework.test.context.support.DependencyInjectionTestExecutionListener -- Performing dependency injection for test class mss.pfe.fileIntegrator.FileIntegratorApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.0.6)
+
+2023-05-05T14:59:54.622+02:00  INFO 15196 --- [           main] m.p.f.FileIntegratorApplicationTests     : Starting FileIntegratorApplicationTests using Java 17.0.7 with PID 15196 (started by bilel in C:\Users\bilel\Desktop\entityCreator\executable)
+2023-05-05T14:59:54.625+02:00  INFO 15196 --- [           main] m.p.f.FileIntegratorApplicationTests     : No active profile set, falling back to 1 default profile: "default"
+2023-05-05T14:59:55.456+02:00  INFO 15196 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-05-05T14:59:55.591+02:00  INFO 15196 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 119 ms. Found 5 JPA repository interfaces.
+2023-05-05T14:59:56.731+02:00  INFO 15196 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-05-05T14:59:56.842+02:00  INFO 15196 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.1.7.Final
+2023-05-05T14:59:57.539+02:00  INFO 15196 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-05-05T14:59:58.172+02:00  INFO 15196 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: 6a34edf4-5dd9-426d-8a88-9f541a6ff011
+2023-05-05T14:59:58.176+02:00  INFO 15196 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-05-05T14:59:58.218+02:00  INFO 15196 --- [           main] SQL dialect                              : HHH000400: Using dialect: org.hibernate.dialect.SQLServer2012Dialect
+2023-05-05T14:59:58.221+02:00  WARN 15196 --- [           main] org.hibernate.orm.deprecation            : HHH90000026: SQLServer2012Dialect has been deprecated; use org.hibernate.dialect.SQLServerDialect instead
+Hibernate: create table ghy.custmer (id bigint not null, c2 varchar(255), name varchar(255), primary key (id))
+Hibernate: create table ghy.e999 (id bigint not null, c1 varchar(255), c2 varchar(255), primary key (id))
+Hibernate: create sequence custmer_seq start with 1 increment by 50
+Hibernate: create sequence e999_seq start with 1 increment by 50
+2023-05-05T15:00:05.785+02:00  INFO 15196 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-05-05T15:00:05.799+02:00  INFO 15196 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-05-05T15:00:06.466+02:00  INFO 15196 --- [           main] m.p.f.FileIntegratorApplicationTests     : Started FileIntegratorApplicationTests in 12.416 seconds (process running for 14.488)
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 13.803 s - in mss.pfe.fileIntegrator.FileIntegratorApplicationTests
+2023-05-05T15:00:06.779+02:00  INFO 15196 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-05-05T15:00:06.783+02:00  INFO 15196 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-05-05T15:00:06.787+02:00  INFO 15196 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- maven-jar-plugin:3.3.0:jar (default-jar) @ fileIntegrator ---
+[INFO] Building jar: C:\Users\bilel\Desktop\entityCreator\executable\target\fileIntegrator-0.0.1-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:3.0.6:repackage (repackage) @ fileIntegrator ---
+[INFO] Replacing main artifact with repackaged archive
+[INFO] 
+[INFO] --- maven-install-plugin:3.0.1:install (default-install) @ fileIntegrator ---
+[INFO] Installing C:\Users\bilel\Desktop\entityCreator\executable\pom.xml to C:\Users\bilel\.m2\repository\mss\pfe\fileIntegrator\0.0.1-SNAPSHOT\fileIntegrator-0.0.1-SNAPSHOT.pom
+[INFO] Installing C:\Users\bilel\Desktop\entityCreator\executable\target\fileIntegrator-0.0.1-SNAPSHOT.jar to C:\Users\bilel\.m2\repository\mss\pfe\fileIntegrator\0.0.1-SNAPSHOT\fileIntegrator-0.0.1-SNAPSHOT.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  23.445 s
+[INFO] Finished at: 2023-05-05T15:00:09+02:00
+[INFO] ------------------------------------------------------------------------
