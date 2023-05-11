@@ -52,8 +52,7 @@ public class fileController {
         ObjectMapper objectMapper = new ObjectMapper();
         Config config = new Config();
         try {
-            config = objectMapper.readValue(configString, new TypeReference<Config>() {
-            });
+            config = objectMapper.readValue(configString, new TypeReference<Config>() {});
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -118,7 +117,6 @@ public class fileController {
     private void processFile(List<String> fileContent, Map<String, ArrayList<Champ>> entities) {
         for (String className : entities.keySet()) {
             String repoDeclaration = DefaultCode.repoDeclaration;
-            String saveObjectCode = DefaultCode.saveObjectCode;
             String saveObjectLine1 =DefaultCode.saveObjectLine1;
             String saveObjectLine2 =DefaultCode.saveObjectLine2;
             String saveObjectLine3 = DefaultCode.saveObjectLine3;

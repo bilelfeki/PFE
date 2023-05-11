@@ -38,7 +38,6 @@ public class DefaultCode {
     public static String repoDeclaration =
             "final %s %s ;\n";
     /*
-    for(int i=0;i<file.length;i++){
         line1
         line2
         line3
@@ -46,31 +45,27 @@ public class DefaultCode {
         Customer customeri = new Customer();
         customeri.setName("bilel");
         customeri.setId("1");
-        .......
+        ...
         .
-        .....
+        ..
         ...
         customer1.setLocal("1");
 
         customerRepo.save(customer)
     }
      */
-    public static String saveObjectCode=
-            "for(int i=0;i<%s;i++){\n" +
-                    "   %s" +
-                    "}\n" ;
     public static String processFileSourceCode="" +
             packageCode+
             importCode+
             annotation+
-            "public class Processor(){\n" +
+            "public class Processor%s{\n" +
             //processorConstructor
             "%s"+
             "@Autowired\n" +
             //repoDeclaration
             "%s"+
             "@Bean\n" +
-            "public void processFile(){\n" +
+            "public void Processor(){\n" +
             //saveObjectCode
             "%s" +
             "}\n" +
