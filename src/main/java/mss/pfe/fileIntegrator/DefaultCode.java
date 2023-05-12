@@ -1,5 +1,7 @@
 package mss.pfe.fileIntegrator;
 
+import java.util.ArrayList;
+
 public class DefaultCode {
     public static String RepositorySourceCode=
             "package mss.pfe.fileIntegrator.entities;\n" +
@@ -27,11 +29,12 @@ public class DefaultCode {
     private static String annotation =
             "@Configuration\n" ;
     public static String processorConstructor=
-            "    public Processor(%s %s) {\n" +
+            //%s is the repoName
+            "    public Processor%s(%s %s) {\n" +
                     "        this.%s = %s;\n" +
                     "    }\n";
     public static String saveObjectLine1="%s %s = new %s() ;\n";
-    public static String saveObjectLine2="%s.set%s(\\\"%s\"\\\");\n";
+    public static String saveObjectLine2="%s.set%s(\"%s\");\n";
     public static String saveObjectLine3="%s.save(%s);\n";
 
     // final customerRepo customerRepo;
@@ -58,14 +61,14 @@ public class DefaultCode {
             packageCode+
             importCode+
             annotation+
+            //fileLineIndex
             "public class Processor%s{\n" +
             //processorConstructor
             "%s"+
-            "@Autowired\n" +
             //repoDeclaration
             "%s"+
             "@Bean\n" +
-            "public void Processor(){\n" +
+            "public void Processor%s(){\n" +
             //saveObjectCode
             "%s" +
             "}\n" +

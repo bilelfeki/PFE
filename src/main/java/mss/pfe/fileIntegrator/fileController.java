@@ -124,41 +124,67 @@ public class fileController {
             String processFileSourceCode = DefaultCode.processFileSourceCode;
             String repoName= className+"Repo";
             String champContent="" ;
+            String codeOfALine="";
             int fileLineIndex = 0;
+            int fileNumber=0;
             //customer1
-            String currentObjectName=currentObjectName=className+fileLineIndex;
-            saveObjectLine1=String.format(saveObjectLine1,className,currentObjectName,className);
+            String currentObjectName;
 
-            System.out.println(repoName);
-            repoDeclaration=String.format(repoDeclaration,repoName,repoName);
+            repoDeclaration=handleRepoDeclaration(repoDeclaration,repoName);
             System.out.println(repoDeclaration);
 
-            saveObjectLine1=String.format(saveObjectLine1,className,currentObjectName,className);
-            System.out.println(saveObjectLine1);
-
             for (String line : fileContent) {
-                fileLineIndex++;
+                currentObjectName=setCurrentObjectName(className,fileLineIndex);
+                System.out.println(fileLineIndex);
+                processorConstructor=String.format(processorConstructor,fileLineIndex,repoName,repoName,repoName,repoName);
+                System.out.println(processorConstructor);
+
+
+                saveObjectLine1=handleSaveObjectLine1(saveObjectLine1,className,currentObjectName);
+
+                codeOfALine+=saveObjectLine1+"\n";
+                //reinitialise line
                 ArrayList<Champ> champs = entities.get(className);
                 for (int i = 0; i < champs.size(); i++) {
                     Champ champ = champs.get(i);
                     champContent = line.substring(champ.getValeur_min(), champ.getValeur_max());
-                    saveObjectLine2=String.format(saveObjectLine2,currentObjectName,champ.getValeur(),champContent);
-                    System.out.println(saveObjectLine2);
-                    System.out.println("champ is"+champ.getValeur());
+                    saveObjectLine2=handleSaveObjectLine2(saveObjectLine2,champContent,champ,currentObjectName);
+                    codeOfALine+=saveObjectLine2+"\n";
+                    saveObjectLine2=DefaultCode.saveObjectLine2;
 
                 }
+                saveObjectLine3=String.format(saveObjectLine3,repoName,currentObjectName);
+                codeOfALine+=saveObjectLine3+"\n";
+                System.out.println("*****\n"+codeOfALine+"*****\n");
+                saveObjectLine1=DefaultCode.saveObjectLine1;
+                saveObjectLine3=DefaultCode.saveObjectLine3;
+                processFileSourceCode=String.format(processFileSourceCode,fileLineIndex,repoDeclaration,processorConstructor,fileLineIndex,codeOfALine);
+                processorConstructor=DefaultCode.processorConstructor;
+                codeOfALine="";
 
+                try {
+                    Writer writer1 = new FileWriter(filePath + "Processor"+fileLineIndex+".java");
+                    writer1.write(processFileSourceCode);
+                    writer1.close();
+                    processFileSourceCode=DefaultCode.processFileSourceCode;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                fileLineIndex++;
             }
 
-            try {
-                Writer writer1 = new FileWriter(filePath + "Processor.java");
-                writer1.write(processFileSourceCode);
-                writer1.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+
             System.out.println(processFileSourceCode);
         }
+    }
+
+    private String handleSaveObjectLine2(String saveObjectLine2, String champContent, Champ champ,String currentObjectName ) {
+       return String.format(saveObjectLine2,currentObjectName,champ.getValeur(),champContent);
+    }
+
+
+    private String setCurrentObjectName(String className, int fileLineIndex) {
+        return className+fileLineIndex;
     }
 
     private List<String> getFileString(MultipartFile file) {
@@ -202,6 +228,11 @@ public class fileController {
         } catch (IOException e) {
             System.out.println("cannot create File");
         }
-
+    }
+    public String handleRepoDeclaration(String repoDeclarationDefaultCode,String repoName){
+        return String.format(repoDeclarationDefaultCode,repoName,repoName);
+    }
+    public String handleSaveObjectLine1(String saveObjectLine1,String className,String currentObjectName){
+        return saveObjectLine1=String.format(saveObjectLine1,className,currentObjectName,className);
     }
 }
