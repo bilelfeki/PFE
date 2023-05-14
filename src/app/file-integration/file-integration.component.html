@@ -1,0 +1,57 @@
+<div class="card">
+    <p-paginator  (onPageChange)="onPageChange($event)" [first]="first" [rows]="1" [totalRecords]="3" 
+    ></p-paginator>
+</div>
+<div class="card">
+    <p-card *ngIf="tabIndex =='1'" header="Choose Your File" subheader="" [style]="{ width: '800px' }">
+        <ng-template pTemplate="footer"></ng-template>
+        <div> 
+            <p-fileUpload (onSelect)="onSelect($event)"  name="myfile[]" [auto]="true"></p-fileUpload>
+        </div>
+    </p-card>
+
+    <p-card *ngIf="tabIndex =='2'" header="Database Configs" subheader="" [style]="{ width: '900px' }">
+        <div class="card flex justify-content-center">
+            <span class="p-float-label">
+                <input pInputText id="database" [(ngModel)]="database" />
+                <label htmlFor="database">database</label>
+            </span>
+        </div>
+        <div class="card flex justify-content-center">
+            <span class="p-float-label">
+                <input pInputText id="schema" [(ngModel)]="schema" />
+                <label htmlFor="schema">schema</label>
+            </span>
+        </div>
+        <ng-template pTemplate="footer"></ng-template>
+    </p-card>
+
+    <p-card *ngIf="tabIndex =='3'" header="Entity Properties" subheader="" [style]="{ width: '900px' }">
+        <div class="card flex justify-content-center">
+            <span class="p-float-label">
+                <input pInputText id="table" [(ngModel)]="table" />
+                <label htmlFor="table">Table Name</label>
+                <p-button icon="pi pi-plus" (click)="addColumn()" label="Column"></p-button>
+            </span>
+        </div>
+
+        <p-card class="Column" *ngFor="let item of generateArray(champNumber);let i=index">
+            <div   class=" minInput card flex justify-content-center">
+                <div>
+                    <span class="p-float-label">
+                        <input pInputText id="uuu" [(ngModel)]="column[i]" />
+                        <label htmlFor="uuu">COLUMN</label>
+                    </span>
+                </div>
+
+                    <p-inputNumber prefix="min-position=" [(ngModel)]="min[i]" [showButtons]="true" inputId="stacked"  > </p-inputNumber>
+                
+                <p-inputNumber prefix="max-position=" [(ngModel)]="max[i]" [showButtons]="true" inputId="stackd" > </p-inputNumber>
+                <p-inputNumber [(ngModel)]="max[i]"  inputId="stackd" > </p-inputNumber>
+            </div>
+        </p-card>
+        <p-divider type="solid"></p-divider>
+        <ng-template pTemplate="footer"></ng-template>
+            <p-button icon="" (click)="submit()" label="submit"></p-button>
+    </p-card>
+</div>

@@ -1,0 +1,16 @@
+p-card{
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+ng-template{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+img{
+    border-radius: 9px;
+    height:300px ;
+}
