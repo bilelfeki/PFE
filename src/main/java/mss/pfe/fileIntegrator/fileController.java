@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mss.pfe.fileIntegrator.entities.Champ;
 import mss.pfe.fileIntegrator.entities.Config;
 import org.springframework.stereotype.Component;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,10 +25,8 @@ public class fileController {
 
     @CrossOrigin("*")
     @PostMapping("/api/v1/file_integrator")
-    public void processFile(@RequestParam("File") MultipartFile file,
-                            @RequestParam("entitiesString") String entitiesString,
-                            @RequestParam("configString") String configString) {
-
+    public void processFile(@RequestParam("File") MultipartFile file, @RequestParam("entitiesString") String entitiesString, @RequestParam("configString") String configString) {
+        System.out.println(entitiesString);
         Config config = convertConfigStringToConfig(configString);
         Map<String, ArrayList<Champ>> entities = convertEntitiesStringToMap(entitiesString);
         String initialRepositorySourceCode = DefaultCode.RepositorySourceCode;
@@ -37,7 +34,6 @@ public class fileController {
         String entityName = "";
         String[] codes = prepareEntityCode(entities, initialRepositorySourceCode, initialEntitySourceCode, config);
 
-        saveFileIntoExecutable(file) ;
         initialRepositorySourceCode = codes[0];
         initialEntitySourceCode = codes[1];
         entityName = codes[2];
@@ -52,7 +48,8 @@ public class fileController {
         ObjectMapper objectMapper = new ObjectMapper();
         Config config = new Config();
         try {
-            config = objectMapper.readValue(configString, new TypeReference<Config>() {});
+            config = objectMapper.readValue(configString, new TypeReference<Config>() {
+            });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -83,10 +80,7 @@ public class fileController {
             Champ champ;
             for (int i = 0; i < entities.get(entity).size(); i++) {
                 champ = entities.get(entity).get(i);
-                initialEntitySourceCode += "private " + champ.getType() + " " + champ.getValeur() + ";\n" +
-                        "public void " + "set" + champ.getValeur() + "(" + champ.getType() + " " + champ.getValeur() + "){\n" +
-                        "this." + champ.getValeur() + "=" + champ.getValeur() + ";\n" +
-                        "}\n";
+                initialEntitySourceCode += "private " + champ.getType() + " " + champ.getValeur() + ";\n" + "public void " + "set" + champ.getValeur() + "(" + champ.getType() + " " + champ.getValeur() + "){\n" + "this." + champ.getValeur() + "=" + champ.getValeur() + ";\n" + "}\n";
             }
             initialEntitySourceCode += "}";
         }
@@ -99,7 +93,6 @@ public class fileController {
 
     public void createFilesFromCode(String entityName, String RepositorySourceCode, String EntitySourceCode) {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
         File sourceFile1 = new File(entityName + ".java");
         File sourceFile2 = new File(entityName + "Repo" + ".java");
         try {
@@ -117,74 +110,51 @@ public class fileController {
     private void processFile(List<String> fileContent, Map<String, ArrayList<Champ>> entities) {
         for (String className : entities.keySet()) {
             String repoDeclaration = DefaultCode.repoDeclaration;
-            String saveObjectLine1 =DefaultCode.saveObjectLine1;
-            String saveObjectLine2 =DefaultCode.saveObjectLine2;
+            String saveObjectLine1 = DefaultCode.saveObjectLine1;
+            String saveObjectLine2 = DefaultCode.saveObjectLine2;
             String saveObjectLine3 = DefaultCode.saveObjectLine3;
-            String processorConstructor = DefaultCode.processorConstructor  ;
-            String processFileSourceCode = DefaultCode.processFileSourceCode;
-            String repoName= className+"Repo";
-            String champContent="" ;
-            String codeOfALine="";
-            int fileLineIndex = 0;
-            int fileNumber=0;
-            //customer1
+            String processorConstructor = DefaultCode.processorConstructor;
+            String repoName = className + "Repo";
+            int fileLineIndex = 1;
             String currentObjectName;
 
-            repoDeclaration=handleRepoDeclaration(repoDeclaration,repoName);
-            System.out.println(repoDeclaration);
+            repoDeclaration = handleRepoDeclaration(repoDeclaration, repoName);
 
-            for (String line : fileContent) {
-                currentObjectName=setCurrentObjectName(className,fileLineIndex);
-                System.out.println(fileLineIndex);
-                processorConstructor=String.format(processorConstructor,fileLineIndex,repoName,repoName,repoName,repoName);
-                System.out.println(processorConstructor);
+                currentObjectName = setCurrentObjectName(className, fileLineIndex);
+                processorConstructor = String.format(processorConstructor, fileLineIndex, repoName, repoName, repoName, repoName);
+                saveObjectLine1 = handleSaveObjectLine1(saveObjectLine1, className, currentObjectName);
 
-
-                saveObjectLine1=handleSaveObjectLine1(saveObjectLine1,className,currentObjectName);
-
-                codeOfALine+=saveObjectLine1+"\n";
-                //reinitialise line
+                String var = "";
+                String var2 = saveObjectLine1;
                 ArrayList<Champ> champs = entities.get(className);
                 for (int i = 0; i < champs.size(); i++) {
                     Champ champ = champs.get(i);
-                    champContent = line.substring(champ.getValeur_min(), champ.getValeur_max());
-                    saveObjectLine2=handleSaveObjectLine2(saveObjectLine2,champContent,champ,currentObjectName);
-                    codeOfALine+=saveObjectLine2+"\n";
-                    saveObjectLine2=DefaultCode.saveObjectLine2;
-
+                    var = "line.substring(" + champ.getValeur_min() + "," + champ.getValeur_max() + ")";
+                    var2 += handleSaveObjectLine2(saveObjectLine2, var, champ, currentObjectName) +");\n";
+                    saveObjectLine2 = DefaultCode.saveObjectLine2;
                 }
-                saveObjectLine3=String.format(saveObjectLine3,repoName,currentObjectName);
-                codeOfALine+=saveObjectLine3+"\n";
-                System.out.println("*****\n"+codeOfALine+"*****\n");
-                saveObjectLine1=DefaultCode.saveObjectLine1;
-                saveObjectLine3=DefaultCode.saveObjectLine3;
-                processFileSourceCode=String.format(processFileSourceCode,fileLineIndex,repoDeclaration,processorConstructor,fileLineIndex,codeOfALine);
-                processorConstructor=DefaultCode.processorConstructor;
-                codeOfALine="";
 
-                try {
-                    Writer writer1 = new FileWriter(filePath + "Processor"+fileLineIndex+".java");
-                    writer1.write(processFileSourceCode);
-                    writer1.close();
-                    processFileSourceCode=DefaultCode.processFileSourceCode;
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                fileLineIndex++;
-            }
+                saveObjectLine3 = String.format(saveObjectLine3, repoName, className+"1");
 
+                    var2+=saveObjectLine3;
+                    try {
+                        Writer writer1 = new FileWriter(filePath + "Processor" + fileLineIndex + ".java");
+                        writer1.write(
+                                String.format(DefaultCode.finalProcessor, fileLineIndex, repoDeclaration, processorConstructor, fileLineIndex, String.format(DefaultCode.forLoop, var2))
+                        );
+                        writer1.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
 
-            System.out.println(processFileSourceCode);
         }
     }
 
-    private String handleSaveObjectLine2(String saveObjectLine2, String champContent, Champ champ,String currentObjectName ) {
-       return String.format(saveObjectLine2,currentObjectName,champ.getValeur(),champContent);
+    private String handleSaveObjectLine2(String saveObjectLine2, String champContent, Champ champ, String currentObjectName) {
+        return String.format(saveObjectLine2, currentObjectName, champ.getValeur(), champContent);
     }
-
-
     private String setCurrentObjectName(String className, int fileLineIndex) {
-        return className+fileLineIndex;
+        return className + fileLineIndex;
     }
 
     private List<String> getFileString(MultipartFile file) {
@@ -198,41 +168,32 @@ public class fileController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         return lines;
     }
 
     @PostMapping("/api/v1/compile")
-    public void compile() {
+    public void compileExecutableProject() {
         try {
-            String path = "C:\\Users\\bilel\\Desktop\\entityCreator\\executable ";
+            String ProjectPath = "C:\\Users\\bilel\\Desktop\\entityCreator\\executable ";
+            String cleanInstallCommand = "cmd /c cd " + ProjectPath + " && mvn clean install > mvn.txt";
+            String runJarCommand = "cmd /c cd " + ProjectPath + "\\target && java -jar fileIntegrator-0.0.1-SNAPSHOT.jar  >ok.txt";
             Runtime rt = Runtime.getRuntime();
-            Process p1 = rt.exec("cmd /c cd " + path + " && mvn clean install > mvn.txt");
+            Process p1 = rt.exec(cleanInstallCommand);
             p1.waitFor(20, TimeUnit.SECONDS);
-
-            Process p2 = Runtime.getRuntime().exec("cmd /c cd " + path + "\\target && java -jar fileIntegrator-0.0.1-SNAPSHOT.jar  >ok.txt");
+            Process p2 = Runtime.getRuntime().exec(runJarCommand);
             p2.waitFor(40, TimeUnit.SECONDS);
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
-    public void saveFileIntoExecutable(MultipartFile file){
-        String filePath="C:\\Users\\bilel\\Desktop\\entityCreator\\executable\\src\\main\\java\\mss\\pfe\\fileIntegrator\\File\\";
-        String fileName = file.getOriginalFilename();
-        File FileInExecutable= new File(filePath+fileName);
-        try {
-            FileCopyUtils.copy(file.getBytes(), FileInExecutable);
-        } catch (IOException e) {
-            System.out.println("cannot create File");
-        }
+
+    public String handleRepoDeclaration(String repoDeclarationDefaultCode, String repoName) {
+        return String.format(repoDeclarationDefaultCode, repoName, repoName);
     }
-    public String handleRepoDeclaration(String repoDeclarationDefaultCode,String repoName){
-        return String.format(repoDeclarationDefaultCode,repoName,repoName);
-    }
-    public String handleSaveObjectLine1(String saveObjectLine1,String className,String currentObjectName){
-        return saveObjectLine1=String.format(saveObjectLine1,className,currentObjectName,className);
+
+    public String handleSaveObjectLine1(String saveObjectLine1, String className, String currentObjectName) {
+        return saveObjectLine1 = String.format(saveObjectLine1, className, currentObjectName, className);
     }
 }

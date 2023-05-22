@@ -1,6 +1,7 @@
 package mss.pfe.fileIntegrator.entities;
 
 
+import jakarta.persistence.Entity;
 
 public class Champ  {
     private String valeur;
