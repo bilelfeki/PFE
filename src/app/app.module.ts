@@ -15,18 +15,23 @@ import { AnimateModule } from 'primeng/animate';
 import { SidebarModule } from 'primeng/sidebar';
 import { MenuModule } from 'primeng/menu';
 import { PaginatorModule } from 'primeng/paginator';
-import {InputTextModule} from 'primeng/inputtext';
-import {FileUploadModule} from 'primeng/fileupload';
-import {HttpClientModule} from '@angular/common/http';
+import { InputTextModule } from 'primeng/inputtext';
+import { FileUploadModule } from 'primeng/fileupload';
+import { HttpClientModule } from '@angular/common/http';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { DividerModule } from 'primeng/divider';
-
+import { EntityComponent } from './entity/entity.component';
+import { TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
+import { TreeSelectModule } from 'primeng/treeselect';
+import { CascadeSelectModule } from 'primeng/cascadeselect';
 
 @NgModule({
   declarations: [
     AppComponent,
     FileIntegrationComponent,
-    HomeComponent
+    HomeComponent,
+    EntityComponent,
   ],
   imports: [
     BrowserModule,
@@ -37,15 +42,19 @@ import { DividerModule } from 'primeng/divider';
     CardModule,
     ButtonModule,
     MenubarModule,
+    CascadeSelectModule,
     AnimateModule,
     SidebarModule,
     MenuModule,
+    TreeSelectModule,
     PaginatorModule,
     InputTextModule,
     FileUploadModule,
     HttpClientModule,
     SplitButtonModule,
-    DividerModule
+    DividerModule,
+    TableModule,
+    ToastModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

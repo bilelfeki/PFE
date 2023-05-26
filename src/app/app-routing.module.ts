@@ -4,8 +4,8 @@ import { FileIntegrationComponent } from './file-integration/file-integration.co
 import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
-  {component:FileIntegrationComponent,path:"file_integration"},
-  {component:HomeComponent,path:"home"}
+  { component: FileIntegrationComponent, path: "file_integration" },
+  { component: HomeComponent, path: "home" }
 ];
 
 @NgModule({

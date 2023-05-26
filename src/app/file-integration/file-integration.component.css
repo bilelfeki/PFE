@@ -1,24 +1,26 @@
-.card{
+.card {
     margin: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-input{
+
+input {
     width: 600px;
 }
-.minInput{
+
+.minInput {
     box-sizing: border-box;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
 }
-.Column{
+
+.Column {
     margin: 20px;
 }
-p-inputNumber{
-        margin-left: 40px;
-        margin-top: 10px;
 
-
+p-inputNumber {
+    margin-left: 40px;
+    margin-top: 10px;
 }
