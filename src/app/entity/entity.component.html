@@ -27,7 +27,7 @@
                 </td>
                 <td>
                     <select *ngIf="editing" class="p-inputtext" [(ngModel)]="champ.type" name="select" id="select">
-                        <option value=" String">String
+                        <option value="String">String
                         </option>
                         <option value="Integer">Integer</option>
                     </select>
@@ -37,7 +37,8 @@
                 <td>
                     <p-cellEditor>
                         <ng-template pTemplate="input">
-                            <input pInputText type="text" [(ngModel)]="champ.valeur_min" required>
+                            <p-inputNumber [showButtons]="true" type="text"
+                                [(ngModel)]="champ.valeur_min"></p-inputNumber>
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{champ.valeur_min}}
@@ -47,8 +48,8 @@
                 <td>
                     <p-cellEditor>
                         <ng-template pTemplate="input">
-                            <input pInputText type="text" [placeholder]="champ.valeur_max"
-                                [(ngModel)]="champ.valeur_max">
+                            <p-inputNumber [showButtons]="true" type="text"
+                                [(ngModel)]="champ.valeur_max"></p-inputNumber>
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{champ.valeur_max }}

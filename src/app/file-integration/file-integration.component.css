@@ -24,3 +24,9 @@ p-inputNumber {
     margin-left: 40px;
     margin-top: 10px;
 }
+
+.selectedFile {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}

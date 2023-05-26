@@ -25,6 +25,10 @@ import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { TreeSelectModule } from 'primeng/treeselect';
 import { CascadeSelectModule } from 'primeng/cascadeselect';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { DropdownModule } from 'primeng/dropdown';
+import { MatSelectModule } from '@angular/material/select';
+
 
 @NgModule({
   declarations: [
@@ -55,6 +59,9 @@ import { CascadeSelectModule } from 'primeng/cascadeselect';
     DividerModule,
     TableModule,
     ToastModule,
+    NoopAnimationsModule,
+    DropdownModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

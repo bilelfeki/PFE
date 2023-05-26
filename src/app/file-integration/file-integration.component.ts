@@ -14,8 +14,10 @@ import { Subscription } from 'rxjs';
 })
 
 export class FileIntegrationComponent implements OnDestroy {
+
   config: Config
   x!: Subscription
+  fileSelected = false;
   constructor(
     private entityService: EntityService,
     private router: Router) {
@@ -33,6 +35,7 @@ export class FileIntegrationComponent implements OnDestroy {
     this.first = event.first;
   }
   onSelectFile(event: FileEvent) {
+    this.fileSelected = true
     this.entityService.addFile(event.currentFiles[0])
     console.log(event.currentFiles);
   }
@@ -49,6 +52,10 @@ export class FileIntegrationComponent implements OnDestroy {
       this.router.navigate(['/home'])
     })
 
-    //this.router.navigate(['/home'])
+    this.router.navigate(['/home'])
+  }
+  onUpdateFileClick() {
+    this.fileSelected = false
+    this.first = 0
   }
 }

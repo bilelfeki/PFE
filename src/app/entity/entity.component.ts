@@ -12,6 +12,7 @@ import { EntityHandlerService } from '../entity-handler.service';
   providers: []
 })
 export class EntityComponent {
+  type = [{ name: "string" }, { name: "integer" }]
   @Output() entityEmitter = new EventEmitter<Entity>();
   entityName: string
   entity: Entity
@@ -24,6 +25,8 @@ export class EntityComponent {
 
   addChamp() {
     this.champs.push({ ...this.champs[0], id: this.champs.length + 1 })
+    console.log(this.champs);
+
   }
   onEntityNameChange() {
     //this.entity = this.entityHandlerService.updateEntityKey(this.entityName, this.entity)

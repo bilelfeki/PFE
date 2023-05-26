@@ -2,15 +2,25 @@
     <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="1" [totalRecords]="3"></p-paginator>
 </div>
 <div class="card">
-    <p-card *ngIf="first ==0 " header="Choose Your File" subheader="" [style]="{ width: '800px' }">
+    <p-card *ngIf="first == 0 && !fileSelected " header="Choose Your File" subheader="" [style]="{ width: '800px' }">
         <ng-template pTemplate="footer"></ng-template>
-        <div>
+        <div *ngIf="first == 0 && !fileSelected ">
             <p-fileUpload (onSelect)="onSelectFile($event)" name="myfile[]" [auto]="true"></p-fileUpload>
         </div>
-        <div class="card">
-            <p-button (click)="onNextClick()">Next</p-button>
+    </p-card>
+    <p-card *ngIf="fileSelected && first==0">
+        <h1>File successufly selected
+        </h1>
+        <div class="selectedFile">
+            <div>
+                <p-button (click)="onNextClick()"> Next </p-button>
+            </div>
+            <div>
+                <p-button (click)="onUpdateFileClick()">Update</p-button>
+            </div>
         </div>
     </p-card>
+
 
     <p-card *ngIf="first==1" header="Database Configs" subheader="" [style]="{ width: '900px' }">
 
