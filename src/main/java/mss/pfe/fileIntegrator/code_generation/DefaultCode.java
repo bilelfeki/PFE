@@ -1,25 +1,7 @@
-package mss.pfe.fileIntegrator;
-
-import java.util.ArrayList;
+package mss.pfe.fileIntegrator.code_generation;
 
 public class DefaultCode {
-    public static String RepositorySourceCode=
-            "package mss.pfe.fileIntegrator.entities;\n" +
-            "import org.springframework.data.jpa.repository.JpaRepository;\n" +
-            "public interface " + "%s"+"Repo extends JpaRepository<"+"%s"+", Long> {\n" +
-            "}";
-    public static  String EntitySourceCode =
-            "package mss.pfe.fileIntegrator.entities;\n" +
-                    "import jakarta.persistence.*;\n\n" +
-                    "@Entity\n" +
-                    "@Table(schema =\"%s\")\n" +
-                    "public class " + "%s" + "{\n" +
-                    "@Id\n" +
-                    "@GeneratedValue(strategy = GenerationType.AUTO)\n" +
-                    "private Long id;\n" +
-                    "public "+"%s"+"(){\n" +
-                    "}\n" +
-                    "";
+
     private static String packageCode=
                     "package mss.pfe.fileIntegrator.entities;\n" ;
     private static String importCode=
@@ -41,39 +23,7 @@ public class DefaultCode {
     // final customerRepo customerRepo;
     public static String repoDeclaration =
             "final %s %s ;\n";
-    /*
-        line1
-        line2
-        line3
-        --------------------------------
-        Customer customeri = new Customer();
-        customeri.setName("bilel");
-        customeri.setId("1");
-        ...
-        .
-        ..
-        ...
-        customer1.setLocal("1");
 
-        customerRepo.save(customer)
-    }
-     */
-    public static String processFileSourceCode="" +
-            packageCode+
-            importCode+
-            annotation+
-            //fileLineIndex
-            "public class Processor%s{\n" +
-            //processorConstructor
-            "%s"+
-            //repoDeclaration
-            "%s"+
-            "@Bean\n" +
-            "public void Processor%s(){\n" +
-            //saveObjectCode
-            "%s" +
-            "}\n" +
-            "}";
     public static String finalProcessor="" +
                     packageCode+
                     importCode+

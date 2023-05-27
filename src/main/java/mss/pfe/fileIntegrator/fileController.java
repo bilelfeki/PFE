@@ -3,9 +3,17 @@ package mss.pfe.fileIntegrator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mss.pfe.fileIntegrator.code_generation.DefaultCode;
+import mss.pfe.fileIntegrator.code_generation.EntityCode;
+import mss.pfe.fileIntegrator.code_generation.RepositoryCode;
+import mss.pfe.fileIntegrator.code_writer.CodeWriter;
 import mss.pfe.fileIntegrator.entities.Champ;
 import mss.pfe.fileIntegrator.entities.Config;
+import mss.pfe.fileIntegrator.mapper.ConfigMapper;
+import mss.pfe.fileIntegrator.mapper.EntityMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,93 +29,71 @@ import java.util.concurrent.TimeUnit;
 @Component
 
 public class fileController {
+    private final EntityMapper entityMapper;
+    private final ConfigMapper configMapper;
+    private final CodeWriter codeWriter ;
+
+    public fileController(EntityMapper entityMapper, ConfigMapper configMapper,CodeWriter codeWriter) {
+        this.entityMapper = entityMapper;
+        this.configMapper = configMapper;
+        this.codeWriter=codeWriter;
+    }
+
+
     String filePath = "C:\\Users\\bilel\\Desktop\\entityCreator\\executable\\src\\main\\java\\mss\\pfe\\fileIntegrator\\entities\\";
 
     @CrossOrigin("*")
     @PostMapping("/api/v1/file_integrator")
     public void processFile(@RequestParam("File") MultipartFile file, @RequestParam("entitiesString") String entitiesString, @RequestParam("configString") String configString) {
+        saveFileIntoExecutable(file);
+
         System.out.println(entitiesString);
-        Config config = convertConfigStringToConfig(configString);
-        Map<String, ArrayList<Champ>> entities = convertEntitiesStringToMap(entitiesString);
-        String initialRepositorySourceCode = DefaultCode.RepositorySourceCode;
-        String initialEntitySourceCode = DefaultCode.EntitySourceCode;
-        String entityName = "";
-        String[] codes = prepareEntityCode(entities, initialRepositorySourceCode, initialEntitySourceCode, config);
+        Config config = configMapper.convertConfigStringToConfig(configString);
+        Map<String, ArrayList<Champ>> entities = entityMapper.convertEntitiesStringToMap(entitiesString);
+        String initialRepositorySourceCode = RepositoryCode.RepositorySourceCode;
+        String initialEntitySourceCode = EntityCode.DefaultEntitySourceCode;
+        String entityName;
 
-        initialRepositorySourceCode = codes[0];
-        initialEntitySourceCode = codes[1];
-        entityName = codes[2];
-
+        initialRepositorySourceCode = this.updateInitialRepositoryCode(entities,initialRepositorySourceCode);
+        initialEntitySourceCode = this.updateInitialEntitySourceCode(entities,initialEntitySourceCode,config);
+        entityName = this.getEntityName(entities);
         createFilesFromCode(entityName, initialRepositorySourceCode, initialEntitySourceCode);
-
-        List<String> fileContent = getFileString(file);
-        processFile(fileContent, entities);
+        processFile(entities);
     }
-
-    private Config convertConfigStringToConfig(String configString) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Config config = new Config();
-        try {
-            config = objectMapper.readValue(configString, new TypeReference<Config>() {
-            });
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return config;
+    public String updateInitialRepositoryCode(Map<String, ArrayList<Champ>> entities, String initialRepositorySourceCode){
+        String entityName=this.getEntityName(entities);
+        return  String.format(initialRepositorySourceCode,entityName, entityName);
     }
-
-    private Map<String, ArrayList<Champ>> convertEntitiesStringToMap(String entitiesString) {
-        Map<String, ArrayList<Champ>> entities = new HashMap<String, ArrayList<Champ>>();
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            Map<String, ArrayList<Champ>> map = objectMapper.readValue(entitiesString, new TypeReference<Map<String, ArrayList<Champ>>>() {
-            });
-            for (String entity : map.keySet()) {
-                entities.put(entity, (map.get(entity)));
+    public String updateInitialEntitySourceCode(Map<String, ArrayList<Champ>> entities,String initialEntitySourceCode,Config config){
+        String updatedEntitySourceCode;
+        String entityName=this.getEntityName(entities);
+        updatedEntitySourceCode = String.format(initialEntitySourceCode, config.getSchema(), entityName, entityName);
+        ArrayList<Champ> champs =entities.get(entityName);
+        Champ champ;
+        for (int i = 0; i < champs.size(); i++) {
+                champ = champs.get(i);
+                updatedEntitySourceCode += "private " + champ.getType() + " "
+                        + champ.getValeur() + ";\n" + "public void "
+                        + "set" + champ.getValeur() + "("
+                        + champ.getType() + " " + champ.getValeur()
+                        + "){\n" + "this." + champ.getValeur() + "="
+                        + champ.getValeur() + ";\n" + "}\n";
             }
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        return entities;
+            updatedEntitySourceCode += "}";
+        return updatedEntitySourceCode;
     }
 
-    private String[] prepareEntityCode(Map<String, ArrayList<Champ>> entities, String initialRepositorySourceCode, String initialEntitySourceCode, Config config) {
-        String[] code = new String[3];
-        String className = "";
-        for (String entity : entities.keySet()) {
-            className = entity;
-            initialEntitySourceCode = String.format(initialEntitySourceCode, config.getSchema(), entity, entity);
-            Champ champ;
-            for (int i = 0; i < entities.get(entity).size(); i++) {
-                champ = entities.get(entity).get(i);
-                initialEntitySourceCode += "private " + champ.getType() + " " + champ.getValeur() + ";\n" + "public void " + "set" + champ.getValeur() + "(" + champ.getType() + " " + champ.getValeur() + "){\n" + "this." + champ.getValeur() + "=" + champ.getValeur() + ";\n" + "}\n";
-            }
-            initialEntitySourceCode += "}";
-        }
-        initialRepositorySourceCode = String.format(initialRepositorySourceCode, className, className);
-        code[0] = initialRepositorySourceCode;
-        code[1] = initialEntitySourceCode;
-        code[2] = className;
-        return code;
+    public String getEntityName(Map<String, ArrayList<Champ>> entities) {
+        return entities.keySet().stream().findFirst().get();
     }
 
     public void createFilesFromCode(String entityName, String RepositorySourceCode, String EntitySourceCode) {
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        File sourceFile1 = new File(entityName + ".java");
-        File sourceFile2 = new File(entityName + "Repo" + ".java");
-        try {
-            Writer writer1 = new FileWriter(filePath + sourceFile1);
-            Writer writer2 = new FileWriter(filePath + sourceFile2);
-            writer1.write(EntitySourceCode);
-            writer2.write(RepositorySourceCode);
-            writer1.close();
-            writer2.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.codeWriter.writeContentIntoPath(EntitySourceCode,filePath,entityName);
+        this.codeWriter.writeContentIntoPath(RepositorySourceCode,filePath,entityName+"Repo");
     }
 
-    private void processFile(List<String> fileContent, Map<String, ArrayList<Champ>> entities) {
+
+    private void processFile( Map<String, ArrayList<Champ>> entities) {
         for (String className : entities.keySet()) {
             String repoDeclaration = DefaultCode.repoDeclaration;
             String saveObjectLine1 = DefaultCode.saveObjectLine1;
@@ -115,37 +101,41 @@ public class fileController {
             String saveObjectLine3 = DefaultCode.saveObjectLine3;
             String processorConstructor = DefaultCode.processorConstructor;
             String repoName = className + "Repo";
-            int fileLineIndex = 1;
+            Integer fileLineIndex = 1;
             String currentObjectName;
-
             repoDeclaration = handleRepoDeclaration(repoDeclaration, repoName);
 
-                currentObjectName = setCurrentObjectName(className, fileLineIndex);
-                processorConstructor = String.format(processorConstructor, fileLineIndex, repoName, repoName, repoName, repoName);
-                saveObjectLine1 = handleSaveObjectLine1(saveObjectLine1, className, currentObjectName);
+            currentObjectName = setCurrentObjectName(className, fileLineIndex);
+            processorConstructor = String.format(processorConstructor, fileLineIndex, repoName, repoName, repoName, repoName);
+            saveObjectLine1 = handleSaveObjectLine1(saveObjectLine1, className, currentObjectName);
 
-                String var = "";
-                String var2 = saveObjectLine1;
-                ArrayList<Champ> champs = entities.get(className);
-                for (int i = 0; i < champs.size(); i++) {
-                    Champ champ = champs.get(i);
+            String var = "";
+            String var2 = saveObjectLine1;
+            ArrayList<Champ> champs = entities.get(className);
+            for (int i = 0; i < champs.size(); i++) {
+                Champ champ = champs.get(i);
+                if (champ.getType().trim().equals("String")) {
                     var = "line.substring(" + champ.getValeur_min() + "," + champ.getValeur_max() + ")";
-                    var2 += handleSaveObjectLine2(saveObjectLine2, var, champ, currentObjectName) +");\n";
-                    saveObjectLine2 = DefaultCode.saveObjectLine2;
+                } else {
+                    var = "Integer.valueOf(" + "line.substring(" + champ.getValeur_min() + "," + champ.getValeur_max() + "))";
                 }
+                var2 += handleSaveObjectLine2(saveObjectLine2, var, champ, currentObjectName) + ");\n";
+                saveObjectLine2 = DefaultCode.saveObjectLine2;
 
-                saveObjectLine3 = String.format(saveObjectLine3, repoName, className+"1");
+            }
 
-                    var2+=saveObjectLine3;
-                    try {
-                        Writer writer1 = new FileWriter(filePath + "Processor" + fileLineIndex + ".java");
-                        writer1.write(
-                                String.format(DefaultCode.finalProcessor, fileLineIndex, repoDeclaration, processorConstructor, fileLineIndex, String.format(DefaultCode.forLoop, var2))
-                        );
-                        writer1.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+            saveObjectLine3 = String.format(saveObjectLine3, repoName, className + "1");
+
+            var2 += saveObjectLine3;
+            try {
+                Writer writer1 = new FileWriter(filePath + "Processor" + fileLineIndex + ".java");
+                writer1.write(
+                        String.format(DefaultCode.finalProcessor, fileLineIndex, repoDeclaration, processorConstructor, fileLineIndex, String.format(DefaultCode.forLoop, var2))
+                );
+                writer1.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
         }
     }
@@ -153,23 +143,11 @@ public class fileController {
     private String handleSaveObjectLine2(String saveObjectLine2, String champContent, Champ champ, String currentObjectName) {
         return String.format(saveObjectLine2, currentObjectName, champ.getValeur(), champContent);
     }
+
     private String setCurrentObjectName(String className, int fileLineIndex) {
         return className + fileLineIndex;
     }
 
-    private List<String> getFileString(MultipartFile file) {
-        List<String> lines = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                lines.add(line);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return lines;
-    }
 
     @PostMapping("/api/v1/compile")
     public void compileExecutableProject() {
@@ -181,7 +159,8 @@ public class fileController {
             Process p1 = rt.exec(cleanInstallCommand);
             p1.waitFor(20, TimeUnit.SECONDS);
             Process p2 = Runtime.getRuntime().exec(runJarCommand);
-            p2.waitFor(40, TimeUnit.SECONDS);
+            //
+            // p2.waitFor(40, TimeUnit.SECONDS);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
@@ -195,5 +174,17 @@ public class fileController {
 
     public String handleSaveObjectLine1(String saveObjectLine1, String className, String currentObjectName) {
         return saveObjectLine1 = String.format(saveObjectLine1, className, currentObjectName, className);
+    }
+
+    public void saveFileIntoExecutable(MultipartFile file) {
+        String filePath = "C:\\Users\\bilel\\Desktop\\entityCreator\\executable\\src\\main\\java\\mss\\pfe\\fileIntegrator\\File\\";
+        String fileName = file.getOriginalFilename();
+        File FileInExecutable = new File(filePath + fileName);
+        try {
+            FileCopyUtils.copy(file.getBytes(), FileInExecutable);
+        } catch (IOException e) {
+            System.out.println("cannot create File");
+        }
+
     }
 }

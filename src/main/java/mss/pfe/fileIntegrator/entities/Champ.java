@@ -7,16 +7,8 @@ public class Champ  {
     private String valeur;
     private Integer valeur_min;
     private Integer valeur_max;
-    private String champType;
     private String type;
 
-    public String getChampType() {
-        return champType;
-    }
-
-    public void setChampType(String champType) {
-        this.champType = champType;
-    }
 
     public Champ() {
     }
