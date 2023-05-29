@@ -21,8 +21,10 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.items[0] = { label: "Home", routerLink: "home", icon: 'pi pi-fw pi-home' };
-    this.items[1] = { label: "File_Integration", routerLink: "file_integration", icon: " pi pi-fw pi-user-edit" }
-    this.items[2] = {}
+    this.items[1] = { label: "File_Integration", routerLink: "file_integration", icon: " pi pi-fw pi-user-edit" };
+    this.items[2] = {
+      label: "generated_code", routerLink: "generated_code", icon: " pi pi-fw pi-code"
+    }
     this.activeItem = this.items[1];
   }
 }

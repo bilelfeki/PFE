@@ -28,7 +28,8 @@ import { CascadeSelectModule } from 'primeng/cascadeselect';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { DropdownModule } from 'primeng/dropdown';
 import { MatSelectModule } from '@angular/material/select';
-
+import { CodeViewerComponent } from './code-viewer/code-viewer.component';
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { MatSelectModule } from '@angular/material/select';
     FileIntegrationComponent,
     HomeComponent,
     EntityComponent,
+    CodeViewerComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,9 +63,12 @@ import { MatSelectModule } from '@angular/material/select';
     ToastModule,
     NoopAnimationsModule,
     DropdownModule,
-    MatSelectModule
+    MatSelectModule,
+    CodemirrorModule
   ],
-  providers: [],
+  providers: [
+
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

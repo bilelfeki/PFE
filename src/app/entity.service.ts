@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Entity } from './interface/entity';
 import { Config } from './interface/config';
+import { CodeGenerated } from './code-linker.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -46,9 +48,9 @@ export class EntityService {
   addConfig(configString: Config) {
     this.formdata.set('configString', JSON.stringify(configString))
   }
-  submitFormData() {
+  submitFormData(): Observable<CodeGenerated> {
     console.log(this.formdata.get('entitiesString'));
 
-    return this.http.post(this.api, this.formdata)
+    return this.http.post<CodeGenerated>(this.api, this.formdata)
   }
 }

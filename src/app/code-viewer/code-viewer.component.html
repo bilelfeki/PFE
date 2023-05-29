@@ -1,0 +1,33 @@
+<div class="card codeView">
+  <h2>Review your code here</h2>
+</div>
+<div class="codeContainer">
+
+  <div class=" codeView code">
+    <h3>EntityCode</h3>
+    <ngx-codemirror [(ngModel)]="codeGenerated.entityCode" [options]="{
+                  lineNumbers: true,
+                  theme: 'material',
+                    mode: 'javascript'
+  
+                }"></ngx-codemirror>
+  </div>
+
+  <div class="codeView">
+    <h3>RepositoryCode</h3>
+    <ngx-codemirror [(ngModel)]="codeGenerated.repoCode" [options]="{
+                lineNumbers: true,
+                theme: 'material',
+                 mode: 'javascript' }"></ngx-codemirror>
+  </div>
+  <div class=" codeView code">
+    <h3>EntityCode</h3>
+    <ngx-codemirror *ngIf="false" [(ngModel)]="springbatchCode " [options]="{
+                      lineNumbers: true,
+                      theme: 'material',
+                        mode: 'javascript'
+      
+                    }"></ngx-codemirror>
+  </div>
+
+</div>
