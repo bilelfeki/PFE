@@ -3,13 +3,21 @@ package mss.pfe.fileIntegrator.code_generation;
 import mss.pfe.fileIntegrator.entities.Champ;
 import mss.pfe.fileIntegrator.entities.Config;
 import mss.pfe.fileIntegrator.entities.SpringBatchCodeGenerated;
+import org.apache.tomcat.util.digester.Rules;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class CodeGenerator {
+    /**
+     * Integer : Integer.valueOf("%s")
+     *
+     */
+    private final Map<String,String> Rules = new HashMap<>();
+
     private final SpringBatchCode springBatchCode;
     public CodeGenerator(SpringBatchCode springBatchCode) {
         this.springBatchCode = springBatchCode;
