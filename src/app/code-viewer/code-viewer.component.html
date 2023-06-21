@@ -18,16 +18,17 @@
     <ngx-codemirror [(ngModel)]="codeGenerated.repoCode" [options]="{
                 lineNumbers: true,
                 theme: 'material',
-                 mode: 'javascript' }"></ngx-codemirror>
+                mode: 'javascript' }"></ngx-codemirror>
   </div>
-  <div class=" codeView code">
-    <h3>EntityCode</h3>
-    <ngx-codemirror *ngIf="false" [(ngModel)]="springbatchCode " [options]="{
+  <div *ngIf="true" class=" spring_batch_code codeView code">
+    <h3>springbatchCode</h3>
+    <ngx-codemirror [(ngModel)]="springbatchCode " [options]="{
                       lineNumbers: true,
                       theme: 'material',
-                        mode: 'javascript'
-      
-                    }"></ngx-codemirror>
+                      mode: 'javascript' }">
+    </ngx-codemirror>
   </div>
+  <p-button *ngIf="compiled" class="compile" (click)="compileCode()">Compile Code</p-button>
+  <p-button *ngIf="!compiled" [disabled]="true" class="compile">Code Compiled successfully</p-button>
 
 </div>

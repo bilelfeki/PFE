@@ -3,15 +3,16 @@ p-card {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
-ng-template {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+
 
 img {
     border-radius: 9px;
     height: 300px;
+}
+
+h3 {
+    text-align: center;
 }

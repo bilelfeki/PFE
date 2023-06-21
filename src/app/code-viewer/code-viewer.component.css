@@ -18,3 +18,12 @@ h2 {
     flex-wrap: wrap;
 
 }
+
+.compile {
+    margin: 0 auto;
+}
+
+.spring_batch_code {
+    width: 100%;
+
+}

@@ -15,7 +15,7 @@ import { CodeLinkerService } from '../code-linker.service';
 })
 
 export class FileIntegrationComponent implements OnDestroy {
-
+  fileName = ""
   config: Config
   x!: Subscription
   fileSelected = false;
@@ -38,6 +38,7 @@ export class FileIntegrationComponent implements OnDestroy {
   }
   onSelectFile(event: FileEvent) {
     this.fileSelected = true
+    this.fileName = event.currentFiles[0].name.split(".")[0]
     this.entityService.addFile(event.currentFiles[0])
     console.log(event.currentFiles);
   }

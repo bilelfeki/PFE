@@ -30,3 +30,7 @@ p-inputNumber {
     align-items: center;
     justify-content: space-around;
 }
+
+span {
+    color: brown;
+}

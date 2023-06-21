@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CodeGenerated, CodeLinkerService } from '../code-linker.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-code-viewer',
@@ -7,9 +8,12 @@ import { CodeGenerated, CodeLinkerService } from '../code-linker.service';
   styleUrls: ['./code-viewer.component.css']
 })
 export class CodeViewerComponent implements OnInit {
+  compiled = true
+  @Input()
   springbatchCode = "";
   codeGenerated = new CodeGenerated();
-  constructor(private codeLinker: CodeLinkerService) { }
+  constructor(private codeLinker: CodeLinkerService,
+    private http: HttpClient) { }
   ngOnInit(): void {
     this.getCode()
   }
@@ -23,5 +27,10 @@ export class CodeViewerComponent implements OnInit {
         + code.springBatchCode.step + code.springBatchCode.writer
     })
   }
-
+  compileCode() {
+    this.compiled = false
+    this.http.post("http://127.0.0.1:8080/api/v1/compile", {}).subscribe(
+      data => console.log(data)
+    )
+  }
 }

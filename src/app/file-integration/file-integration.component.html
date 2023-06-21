@@ -2,18 +2,18 @@
     <p-paginator (onPageChange)="onPageChange($event)" [first]="first" [rows]="1" [totalRecords]="3"></p-paginator>
 </div>
 <div class="card">
-    <p-card *ngIf="first == 0 && !fileSelected " header="Choose Your File" subheader="" [style]="{ width: '800px' }">
+    <p-card *ngIf="first == 0 && !fileSelected " header="Choose Your File" subheader="" [style]="{ width: '1300px' }">
         <ng-template pTemplate="footer"></ng-template>
         <div *ngIf="first == 0 && !fileSelected ">
             <p-fileUpload (onSelect)="onSelectFile($event)" name="myfile[]" [auto]="true"></p-fileUpload>
         </div>
     </p-card>
     <p-card *ngIf="fileSelected && first==0">
-        <h1>File successufly selected
+        <h1>File <span>{{fileName|uppercase}}</span> successfully selected
         </h1>
         <div class="selectedFile">
             <div>
-                <p-button (click)="onNextClick()"> Next </p-button>
+                <p-button [ngStyle]="{backgroundColor:'var(--primary)'}" (click)="onNextClick()"> Next </p-button>
             </div>
             <div>
                 <p-button (click)="onUpdateFileClick()">Update</p-button>
@@ -21,8 +21,7 @@
         </div>
     </p-card>
 
-
-    <p-card *ngIf="first==1" header="Database Configs" subheader="" [style]="{ width: '900px' }">
+    <p-card *ngIf="first==1" header="Database Configs" subheader="" [style]="{ width: '1300px' }">
 
         <div class="card flex justify-content-center">
             <span class="p-float-label">
@@ -42,7 +41,7 @@
         </div>
     </p-card>
 
-    <p-card *ngIf="first == 2" header="Entity Properties" subheader="" [style]="{ width: '900px' }">
+    <p-card *ngIf="first == 2" header="Entity Properties" subheader="" [style]="{ width: '1300px' }">
         <app-entity (entityEmitter)="getEntity($event)"></app-entity>
     </p-card>
 </div>

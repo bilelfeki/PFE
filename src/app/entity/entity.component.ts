@@ -12,8 +12,8 @@ import { EntityHandlerService } from '../entity-handler.service';
   providers: []
 })
 export class EntityComponent {
-  type = [{ name: "string" }, { name: "integer" }]
   @Output() entityEmitter = new EventEmitter<Entity>();
+  type = [{ name: "string" }, { name: "integer" }]
   entityName: string
   entity: Entity
   champs: Champ[];
@@ -40,5 +40,9 @@ export class EntityComponent {
   submitEntity() {
     this.entityEmitter.emit(this.entity)
     this.entity = this.entityHandlerService.createEmptyEntity();
+  }
+  deleteColumn(champTodelete: Champ) {
+    this.champs = this.champs.filter(champ => champ != champTodelete)
+    this.entity[this.entityName] = this.champs
   }
 }
