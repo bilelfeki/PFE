@@ -28,7 +28,8 @@ public class FileInsertionCode {
     public static String fileInsertionMethodCode ="" +
             "@Bean\n" +
             "public void readFile(){\n" +
-            "String filePath=\"C:/Users/bilel/Desktop/entityCreator/executable/src/main/java/mss//pfe/fileIntegrator/File\";\n" +
+            "String userHome = System.getProperty(\"user.home\");\n" +
+            "String filePath=userHome + \"/Desktop/executable/src/main/java/mss/pfe/fileIntegrator/File\";\n" +
             "File sourceFile1 = new File(filePath).listFiles()[0];\n" +
             "try {\n" +
             "FileReader fileReader = new FileReader(sourceFile1);\n" +

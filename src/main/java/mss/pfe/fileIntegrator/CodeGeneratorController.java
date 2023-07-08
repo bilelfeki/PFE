@@ -40,11 +40,14 @@ public class CodeGeneratorController {
     }
 
 
-    String filePath = "C:\\Users\\bilel\\Desktop\\entityCreator\\executable\\src\\main\\java\\mss\\pfe\\fileIntegrator\\entities\\";
+    String userHome= System.getProperty("user.home");
+
+    String filePath = userHome +"\\Desktop\\executable\\src\\main\\java\\mss\\pfe\\fileIntegrator\\entities\\";
 
     @CrossOrigin("*")
     @PostMapping("/api/v1/file_integrator")
     public CodeGenerated generateFileInsertionCode(@RequestParam("File") MultipartFile file, @RequestParam("entitiesString") String entitiesString, @RequestParam("configString") String configString) {
+        System.out.println(userHome);
 
         System.out.println(entitiesString);
         Config config = configMapper.convertConfigStringToConfig(configString);
@@ -128,10 +131,12 @@ public class CodeGeneratorController {
 
     @PostMapping("/api/v1/compile")
     public void compileExecutableProject() {
+        String userHome= System.getProperty("user.home");
+        String ProjectPath = userHome +"\\Desktop\\executable ";
+        String cleanInstallCommand = "cmd /c cd " + ProjectPath + " && mvn clean install > mvn.txt";
+        String runJarCommand = "cmd /c cd " + ProjectPath + "\\target && java -jar fileIntegrator-0.0.1-SNAPSHOT.jar  >ok.txt";
+
         try {
-            String ProjectPath = "C:\\Users\\bilel\\Desktop\\entityCreator\\executable ";
-            String cleanInstallCommand = "cmd /c cd " + ProjectPath + " && mvn clean install > mvn.txt";
-            String runJarCommand = "cmd /c cd " + ProjectPath + "\\target && java -jar fileIntegrator-0.0.1-SNAPSHOT.jar  >ok.txt";
             Runtime rt = Runtime.getRuntime();
             Process p1 = rt.exec(cleanInstallCommand);
             p1.waitFor(20, TimeUnit.SECONDS);
@@ -152,7 +157,9 @@ public class CodeGeneratorController {
     }
 
     public void saveFileIntoExecutable(MultipartFile file) {
-        String filePath = "C:\\Users\\bilel\\Desktop\\entityCreator\\executable\\src\\main\\java\\mss\\pfe\\fileIntegrator\\File\\";
+        String userHome= System.getProperty("user.home");
+
+        String filePath = userHome +"\\Desktop\\executable\\src\\main\\java\\mss\\pfe\\fileIntegrator\\File\\";
         String fileName = file.getOriginalFilename();
         File FileInExecutable = new File(filePath + fileName);
         try {
